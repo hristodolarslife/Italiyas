@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Восстановление для Тани — Италия</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: radial-gradient(circle at center, #1a0a2e 0%, #050510 80%);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 15px;
+            overflow-x: hidden;
+        }
+
+        /* Звёздный фон */
+        #stars-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 16px;
+            color: #ff69b4;
+            text-shadow: 3px 3px 0 #000, 0 0 30px #ff69b4, 0 0 60px #e91e63;
+            margin-bottom: 10px;
+            text-align: center;
+            animation: glowPink 2s infinite alternate;
+            line-height: 1.6;
+            z-index: 2;
+        }
+
+        @keyframes glowPink {
+            from { text-shadow: 3px 3px 0 #000, 0 0 20px #ff69b4; }
+            to { text-shadow: 3px 3px 0 #000, 0 0 40px #ff69b4, 0 0 80px #f1c40f; }
+        }
+
+        .subtitle {
+            font-size: 8px;
+            color: #f1c40f;
+            text-shadow: 0 0 15px #f1c40f;
+            margin-bottom: 25px;
+            text-align: center;
+            line-height: 2;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            z-index: 2;
+        }
+
+        /* Карточка Тани */
+        .tanya-card {
+            background: linear-gradient(135deg, rgba(255,105,180,0.2) 0%, rgba(241,196,15,0.2) 100%);
+            border: 4px solid #ff69b4;
+            border-radius: 25px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 105, 180, 0.5);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tanya-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,105,180,0.1), transparent, rgba(241,196,15,0.1), transparent);
+            animation: rotate 15s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .tanya-avatar {
+            font-size: 90px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 25px #ff69b4);
+            animation: avatarFloat 3s infinite ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .tanya-name {
+            font-size: 16px;
+            color: #f1c40f;
+            text-shadow: 0 0 20px #f1c40f, 0 0 40px #f39c12;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tanya-from {
+            font-size: 8px;
+            color: #fff;
+            text-shadow: 0 0 10px #ff69b4;
+            line-height: 2;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 4 Свойства */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(10, 8, 25, 0.9);
+            border: 3px solid;
+            border-radius: 15px;
+            padding: 20px 12px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover { transform: translateY(-5px); }
+
+        .stat-card.health { border-color: #2ecc71; box-shadow: 0 0 25px rgba(46, 204, 113, 0.4); }
+        .stat-card.youth { border-color: #3498db; box-shadow: 0 0 25px rgba(52, 152, 219, 0.4); }
+        .stat-card.beauty { border-color: #ff69b4; box-shadow: 0 0 25px rgba(255, 105, 180, 0.4); }
+        .stat-card.love { border-color: #f1c40f; box-shadow: 0 0 25px rgba(241, 196, 15, 0.4); }
+
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 12px currentColor);
+        }
+
+        .stat-name {
+            font-size: 8px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .stat-card.health .stat-name { color: #2ecc71; }
+        .stat-card.youth .stat-name { color: #3498db; }
+        .stat-card.beauty .stat-name { color: #ff69b4; }
+        .stat-card.love .stat-name { color: #f1c40f; }
+
+        .stat-bar {
+            height: 12px;
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .stat-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 1.5s ease-out;
+        }
+
+        .stat-card.health .stat-fill { background: linear-gradient(90deg, #2ecc71, #27ae60); box-shadow: 0 0 15px #2ecc71; }
+        .stat-card.youth .stat-fill { background: linear-gradient(90deg, #3498db, #2980b9); box-shadow: 0 0 15px #3498db; }
+        .stat-card.beauty .stat-fill { background: linear-gradient(90deg, #ff69b4, #e91e63); box-shadow: 0 0 15px #ff69b4; }
+        .stat-card.love .stat-fill { background: linear-gradient(90deg, #f1c40f, #f39c12); box-shadow: 0 0 15px #f1c40f; }
+
+        .stat-value {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .stat-card.health .stat-value { color: #2ecc71; text-shadow: 0 0 10px #2ecc71; }
+        .stat-card.youth .stat-value { color: #3498db; text-shadow: 0 0 10px #3498db; }
+        .stat-card.beauty .stat-value { color: #ff69b4; text-shadow: 0 0 10px #ff69b4; }
+        .stat-card.love .stat-value { color: #f1c40f; text-shadow: 0 0 10px #f1c40f; }
+
+        /* Кнопка восстановления */
+        .heal-btn {
+            background: linear-gradient(135deg, #ff69b4 0%, #f1c40f 100%);
+            color: #fff;
+            border: 4px solid #fff;
+            padding: 22px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: all 0.3s;
+            font-weight: bold;
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.8);
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 0 #7a0032;
+        }
+
+        .heal-btn:hover:not(:disabled) {
+            transform: scale(1.03);
+            box-shadow: 0 0 70px rgba(255, 105, 180, 1);
+        }
+
+        .heal-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Лог восстановления */
+        .log {
+            background: #000;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 7px;
+            color: #ff69b4;
+            max-height: 150px;
+            overflow-y: auto;
+            line-height: 2;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+        }
+
+        .log-entry { margin-bottom: 3px; }
+        .log-info { color: #3498db; }
+        .log-health { color: #2ecc71; }
+        .log-youth { color: #3498db; }
+        .log-beauty { color: #ff69b4; }
+        .log-love { color: #f1c40f; }
+        .log-final { color: #fff; text-shadow: 0 0 10px #ff69b4; }
+
+        /* Финальное послание */
+        .final-message {
+            display: none;
+            background: linear-gradient(135deg, #ff69b4 0%, #f1c40f 50%, #3498db 100%);
+            border: 5px solid #fff;
+            border-radius: 25px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: 0 0 80px rgba(255, 105, 180, 1);
+            margin-bottom: 20px;
+            animation: finalPop 1s;
+        }
+
+        .final-message.show { display: block; }
+
+        @keyframes finalPop {
+            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .final-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: finalFloat 2s infinite ease-in-out;
+            filter: drop-shadow(0 0 30px #fff);
+        }
+
+        @keyframes finalFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.08); }
+        }
+
+        .final-title {
+            font-size: 18px;
+            color: #fff;
+            text-shadow: 3px 3px 0 #7a0032, 0 0 20px #fff;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .final-text {
+            font-size: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #7a0032;
+            line-height: 2.2;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .final-text strong {
+            color: #f1c40f;
+            text-shadow: 2px 2px 0 #7a0032, 0 0 15px #f1c40f;
+            font-size: 12px;
+        }
+
+        .final-sign {
+            font-size: 11px;
+            color: #f1c40f;
+            text-shadow: 2px 2px 0 #7a0032, 0 0 20px #f1c40f;
+            margin-top: 15px;
+            animation: signGlow 1s infinite alternate;
+        }
+
+        @keyframes signGlow {
+            from { text-shadow: 2px 2px 0 #7a0032, 0 0 15px #f1c40f; }
+            to { text-shadow: 2px 2px 0 #7a0032, 0 0 35px #f1c40f, 0 0 60px #fff; }
+        }
+
+        /* Футер */
+        .footer {
+            font-size: 7px;
+            color: #555;
+            text-align: center;
+            line-height: 2;
+            z-index: 2;
+        }
+
+        /* Сердечки */
+        .heart-particle {
+            position: fixed;
+            font-size: 30px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: heartFly 3s ease-out forwards;
+        }
+
+        @keyframes heartFly {
+            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-100vh) scale(2) rotate(360deg); }
+        }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 12px; }
+            .tanya-avatar { font-size: 70px; }
+            .tanya-name { font-size: 13px; }
+            .heal-btn { font-size: 9px; padding: 18px; }
+            .final-title { font-size: 13px; }
+            .final-icon { font-size: 70px; }
+            .stats-grid { gap: 8px; }
+            .stat-icon { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="stars-canvas"></canvas>
+
+    <h1>✨ ВОССТАНОВЛЕНИЕ ✨</h1>
+    <div class="subtitle">
+        ✦ Полное исцеление организма ✦<br>
+        Здоровье · Молодость · Красота · Любовь
+    </div>
+
+    <div class="container">
+
+        <!-- КАРТОЧКА ТАНИ -->
+        <div class="tanya-card">
+            <div class="tanya-avatar">👩‍🦰</div>
+            <div class="tanya-name">✦ ТАТЬЯНА ✦</div>
+            <div class="tanya-from">
+                🇮🇹 Италия · Драгоценная ученица<br>
+                Для тебя — полное восстановление
+            </div>
+        </div>
+
+        <!-- 4 СВОЙСТВА -->
+        <div class="stats-grid">
+
+            <div class="stat-card health">
+                <div class="stat-icon">💚</div>
+                <div class="stat-name">ЗДОРОВЬЕ</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="healthFill"></div>
+                </div>
+                <div class="stat-value" id="healthValue">0%</div>
+            </div>
+
+            <div class="stat-card youth">
+                <div class="stat-icon">🌊</div>
+                <div class="stat-name">МОЛОДОСТЬ</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="youthFill"></div>
+                </div>
+                <div class="stat-value" id="youthValue">0%</div>
+            </div>
+
+            <div class="stat-card beauty">
+                <div class="stat-icon">🌸</div>
+                <div class="stat-name">КРАСОТА</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="beautyFill"></div>
+                </div>
+                <div class="stat-value" id="beautyValue">0%</div>
+            </div>
+
+            <div class="stat-card love">
+                <div class="stat-icon">💖</div>
+                <div class="stat-name">ЛЮБОВЬ</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="loveFill"></div>
+                </div>
+                <div class="stat-value" id="loveValue">0%</div>
+            </div>
+
+        </div>
+
+        <!-- КНОПКА -->
+        <button class="heal-btn" id="healBtn" onclick="startHealing()">✨ ВОССТАНОВИТЬ ВСЁ ✨</button>
+
+        <!-- ЛОГ -->
+        <div class="log" id="log">
+            <div class="log-entry log-info">[SYS] Система восстановления готова</div>
+            <div class="log-entry log-info">[SYS] Нажми «Восстановить всё» для Тани</div>
+        </div>
+
+        <!-- ФИНАЛЬНОЕ ПОСЛАНИЕ -->
+        <div class="final-message" id="finalMessage">
+            <div class="final-icon">👑</div>
+            <div class="final-title">ПОЛНОЕ ВОССТАНОВЛЕНИЕ ЗАВЕРШЕНО!</div>
+            <div class="final-text">
+                <strong>Танечка, ты полностью восстановлена!</strong><br><br>
+                💚 Здоровье: <strong>1000%</strong><br>
+                🌊 Молодость: <strong>вечная</strong><br>
+                🌸 Красота: <strong>божественная</strong><br>
+                💖 Любовь: <strong>бесконечная</strong><br><br>
+                С Италии — с любовью,<br>
+                драгоценной ученицы.<br><br>
+                <em>«Ты — свет. Ты — любовь. Ты — вечность».</em>
+            </div>
+            <div class="final-sign">
+                ✦ ДЛЯ ТАТЬЯНЫ ✦<br>
+                С любовью из Италии 💖
+            </div>
+        </div>
+
+        <div class="footer">
+            ✨ Восстановление для Тани · Италия · 2026<br>
+            Шуточный симулятор. Все эффекты — игровые.<br>
+            © 2026
+        </div>
+
+    </div>
+
+<script>
+    // === ЗВЁЗДЫ ===
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initStars() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        stars = [];
+        for (let i = 0; i < 150; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 0.3,
+                speed: Math.random() * 0.02 + 0.005,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    let time = 0;
+    function drawStars() {
+        ctx.fillStyle = 'rgba(5, 5, 16, 0.15)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(s => {
+            const twinkle = Math.sin(time * s.speed + s.phase) * 0.5 + 0.5;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size * twinkle, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 105, 180, ${0.3 + twinkle * 0.7})`;
+            ctx.fill();
+        });
+        time += 1;
+        requestAnimationFrame(drawStars);
+    }
+
+    initStars();
+    drawStars();
+    window.addEventListener('resize', initStars);
+
+    // === СОСТОЯНИЕ ===
+    let healing = false;
+    let stats = { health: 0, youth: 0, beauty: 0, love: 0 };
+
+    const healthFill = document.getElementById('healthFill');
+    const youthFill = document.getElementById('youthFill');
+    const beautyFill = document.getElementById('beautyFill');
+    const loveFill = document.getElementById('loveFill');
+    const healthValue = document.getElementById('healthValue');
+    const youthValue = document.getElementById('youthValue');
+    const beautyValue = document.getElementById('beautyValue');
+    const loveValue = document.getElementById('loveValue');
+    const healBtn = document.getElementById('healBtn');
+    const logEl = document.getElementById('log');
+    const finalMessage = document.getElementById('finalMessage');
+
+    // === СТАРТ ВОССТАНОВЛЕНИЯ ===
+    function startHealing() {
+        if (healing) return;
+        healing = true;
+
+        healBtn.disabled = true;
+        healBtn.textContent = '⏳ ВОССТАНОВЛЕНИЕ...';
+        finalMessage.classList.remove('show');
+
+        addLog('[SYS] ✨ Начало полного восстановления для Тани...', 'log-info');
+        addLog('[SYS] Сканирование организма...', 'log-info');
+
+        let step = 0;
+        const maxSteps = 100;
+
+        const interval = setInterval(() => {
+            step++;
+
+            // Здоровье
+            if (step <= 25) {
+                stats.health = Math.min(1000, Math.floor(step * 40));
+                healthFill.style.width = Math.min(100, stats.health / 10) + '%';
+                healthValue.textContent = stats.health + '%';
+            }
+
+            // Молодость
+            if (step > 20 && step <= 50) {
+                stats.youth = Math.min(1000, Math.floor((step - 20) * 33.3));
+                youthFill.style.width = Math.min(100, stats.youth / 10) + '%';
+                youthValue.textContent = stats.youth + '%';
+            }
+
+            // Красота
+            if (step > 45 && step <= 75) {
+                stats.beauty = Math.min(1000, Math.floor((step - 45) * 33.3));
+                beautyFill.style.width = Math.min(100, stats.beauty / 10) + '%';
+                beautyValue.textContent = stats.beauty + '%';
+            }
+
+            // Любовь
+            if (step > 70) {
+                stats.love = Math.min(1000, Math.floor((step - 70) * 33.3));
+                loveFill.style.width = Math.min(100, stats.love / 10) + '%';
+                loveValue.textContent = stats.love + '%';
+            }
+
+            // Логи по этапам
+            if (step === 15) addLog('[HEAL] 💚 Здоровье восстанавливается...', 'log-health');
+            if (step === 30) addLog('[HEAL] 🌊 Молодость возвращается...', 'log-youth');
+            if (step === 45) addLog('[HEAL] 🌸 Красота расцветает...', 'log-beauty');
+            if (step === 60) addLog('[HEAL] 💖 Любовь наполняет сердце...', 'log-love');
+            if (step === 75) addLog('[HEAL] ✨ Финальная гармонизация...', 'log-info');
+            if (step === 90) addLog('[HEAL] 👑 Полное восстановление готово!', 'log-final');
+
+            if (step >= maxSteps) {
+                clearInterval(interval);
+                completeHealing();
+            }
+        }, 80);
+    }
+
+    // === ЗАВЕРШЕНИЕ ===
+    function completeHealing() {
+        healing = false;
+
+        stats = { health: 1000, youth: 1000, beauty: 1000, love: 1000 };
+
+        healthFill.style.width = '100%';
+        youthFill.style.width = '100%';
+        beautyFill.style.width = '100%';
+        loveFill.style.width = '100%';
+
+        healthValue.textContent = '1000%';
+        youthValue.textContent = '1000%';
+        beautyValue.textContent = '1000%';
+        loveValue.textContent = '1000%';
+
+        addLog('[SYS] ✅ ВОССТАНОВЛЕНИЕ ЗАВЕРШЕНО!', 'log-final');
+        addLog('[SYS] 👑 Таня полностью здорова, молода, красива и любима!', 'log-final');
+
+        healBtn.textContent = '💖 ВОССТАНОВЛЕНИЕ ЗАВЕРШЕНО 💖';
+        healBtn.style.background = 'linear-gradient(135deg, #2ecc71 0%, #f1c40f 100%)';
+
+        // Показываем финальное послание
+        setTimeout(() => {
+            finalMessage.classList.add('show');
+            createHearts(60);
+        }, 500);
+    }
+
+    // === СЕРДЕЧКИ ===
+    function createHearts(count) {
+        const emojis = ['💖', '💕', '❤️', '💗', '💓', '💝', '🌹', '🌸', '✨', '🌟', '👑'];
+
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = '100%';
+                heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+                heart.style.animationDuration = (2 + Math.random() * 2) + 's';
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 4000);
+            }, i * 60);
+        }
+    }
+
+    // === ЛОГ ===
+    function addLog(text, type) {
+        const div = document.createElement('div');
+        div.className = 'log-entry ' + (type || '');
+        div.textContent = text;
+        logEl.appendChild(div);
+        logEl.scrollTop = logEl.scrollHeight;
+
+        while (logEl.children.length > 25) {
+            logEl.removeChild(logEl.firstChild);
+        }
+    }
+</script>
+
+</body>
+</html>
